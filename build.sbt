@@ -12,6 +12,15 @@ inThisBuild(
     scalafmtOnCompile := !insideCI.value,
 
     version := "0.0.1",
+    versionScheme := Some("always"),
+    publishTo := Some("GitHub juliano Apache Maven Packages" at "https://maven.pkg.github.com/juliano/zio-firebase"),
+    publishMavenStyle := true,
+    credentials += Credentials(
+      "GitHub Package Registry",
+      "maven.pkg.github.com",
+      "juliano",
+      System.getenv("GITHUB_TOKEN")
+    )
   )
 )
 
