@@ -11,7 +11,7 @@ inThisBuild(
     scalafmtSbtCheck := true,
     scalafmtOnCompile := !insideCI.value,
 
-    version := "0.0.1",
+    version := "0.0.2",
     versionScheme := Some("always"),
     publishTo := Some("GitHub juliano Apache Maven Packages" at "https://maven.pkg.github.com/juliano/zio-firebase"),
     publishMavenStyle := true,
