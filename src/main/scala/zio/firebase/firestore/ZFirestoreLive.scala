@@ -16,8 +16,8 @@ final case class ZFirestoreLive(firestore: Firestore) extends ZFirestore:
       data <- ZIO.fromEither(codec.from(doc.getData))
     yield data
 
-  def add[A](c: CollectionPath, data: A)(using codec: JavaCodec[A]): Task[Unit] =
-    withFirestore(_.collection(c).add(codec.to(data))).unit
+  def add[A](c: CollectionPath, data: A)(using codec: JavaCodec[A]): Task[DocumentPath] =
+    withFirestore(_.collection(c).add(codec.to(data))).map(d => DocumentPath(d.getId))
 
   def set[A](c: CollectionPath, d: DocumentPath, data: A)(using codec: JavaCodec[A]): Task[Unit] =
     withFirestore(_.collection(c).document(d).set(codec.to(data), SetOptions.merge())).unit
