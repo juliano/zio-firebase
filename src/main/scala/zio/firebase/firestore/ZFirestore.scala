@@ -6,6 +6,8 @@ import zio.Task
 trait ZFirestore:
   def get[A](c: CollectionPath, d: DocumentPath)(using JavaCodec[A]): Task[A]
 
+  def add[A](c: CollectionPath, data: A)(using codec: JavaCodec[A]): Task[Unit]
+
   def set[A](c: CollectionPath, d: DocumentPath, data: A)(using JavaCodec[A]): Task[Unit]
 
   def setField(c: CollectionPath, d: DocumentPath, field: String, value: Any): Task[Unit]

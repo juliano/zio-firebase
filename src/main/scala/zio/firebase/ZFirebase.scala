@@ -3,9 +3,10 @@ package zio.firebase
 import com.google.firebase.{FirebaseApp, FirebaseOptions}
 import zio.*
 import zio.firebase.auth.oauth2.Credentials
+import zio.firebase.storage.BucketName
 
 object ZFirebase:
-  def make(credentials: Credentials, bucket: String): RIO[Scope, FirebaseApp] =
+  def make(credentials: Credentials, bucketName: BucketName): RIO[Scope, FirebaseApp] =
     val acquire: Task[FirebaseApp] =
       for
         creds <- credentials.get
@@ -13,7 +14,7 @@ object ZFirebase:
                  FirebaseApp.initializeApp(
                    FirebaseOptions.builder
                      .setCredentials(creds)
-                     .setStorageBucket(bucket)
+                     .setStorageBucket(bucketName.value)
                      .build
                  )
                }
@@ -23,9 +24,10 @@ object ZFirebase:
 
     ZIO.acquireRelease(acquire)(release)
 
-  def live(bucket: String): RLayer[Credentials, FirebaseApp] = ZLayer.scoped {
+  val live: RLayer[Credentials & BucketName, FirebaseApp] = ZLayer.scoped {
     for
       credentials <- ZIO.service[Credentials]
-      fa          <- make(credentials, bucket)
+      bucketName  <- ZIO.service[BucketName]
+      fa          <- make(credentials, bucketName)
     yield fa
   }
