@@ -5,7 +5,7 @@ import zio.*
 
 import java.io.{IOException, InputStream}
 
-trait Credentials extends Serializable:
+trait Credentials:
   def get: IO[IOException, GoogleCredentials]
 
 object Credentials:

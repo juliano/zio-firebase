@@ -3,7 +3,7 @@ package zio.firebase.firestore
 import com.google.cloud.firestore.{CollectionReference, Query}
 import zio.Task
 
-trait ZFirestore:
+trait Firestore:
   def get[A](c: CollectionPath, d: DocumentPath)(using JavaCodec[A]): Task[A]
 
   def add[A](c: CollectionPath, data: A)(using codec: JavaCodec[A]): Task[DocumentPath]

@@ -1,9 +1,9 @@
 package zio.firebase.auth
 
-import com.google.firebase.auth.*
+import com.google.firebase.auth.{FirebaseToken, UserInfo}
 import zio.*
 
-trait ZFirebaseAuth:
+trait FirebaseAuth:
   def createCustomToken(uid: String): Task[String]
 
   def verifyToken(token: String): Task[FirebaseToken]

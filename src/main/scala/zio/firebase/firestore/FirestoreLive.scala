@@ -1,15 +1,15 @@
 package zio.firebase.firestore
 
 import com.google.api.core.{ApiFuture, ApiFutureToListenableFuture}
-import com.google.cloud.firestore.*
+import com.google.cloud.firestore.{Firestore as GoogleFirestore, *}
 import com.google.firebase.FirebaseApp
 import com.google.firebase.cloud.FirestoreClient
-import zio.interop.guava.fromListenableFuture
 import zio.*
+import zio.interop.guava.fromListenableFuture
 
 import scala.jdk.CollectionConverters.*
 
-final case class ZFirestoreLive(firestore: Firestore) extends ZFirestore:
+final case class FirestoreLive(firestore: GoogleFirestore) extends Firestore:
   def get[A](c: CollectionPath, d: DocumentPath)(using codec: JavaCodec[A]): Task[A] =
     for
       doc  <- withFirestore(_.collection(c).document(d).get())
@@ -55,13 +55,13 @@ final case class ZFirestoreLive(firestore: Firestore) extends ZFirestore:
   def count(path: CollectionPath)(f: CollectionReference => Query): Task[Long] =
     withFirestore(fs => f(fs.collection(path)).count().get()).map(_.getCount())
 
-  private def withFirestore[A](f: Firestore => ApiFuture[A]): Task[A] =
+  private def withFirestore[A](f: GoogleFirestore => ApiFuture[A]): Task[A] =
     fromListenableFuture(ZIO.succeed(new ApiFutureToListenableFuture[A](f(firestore))))
 
-object ZFirestoreLive:
-  val live: URLayer[FirebaseApp, ZFirestore] = ZLayer {
+object FirestoreLive:
+  val layer: URLayer[FirebaseApp, Firestore] = ZLayer {
     for
       app       <- ZIO.service[FirebaseApp]
       firestore <- ZIO.attempt(FirestoreClient.getFirestore(app)).orDie
-    yield ZFirestoreLive(firestore)
+    yield FirestoreLive(firestore)
   }

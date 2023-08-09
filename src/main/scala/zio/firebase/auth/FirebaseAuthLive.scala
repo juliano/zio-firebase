@@ -2,11 +2,11 @@ package zio.firebase.auth
 
 import com.google.api.core.{ApiFuture, ApiFutureToListenableFuture}
 import com.google.firebase.FirebaseApp
-import com.google.firebase.auth.*
+import com.google.firebase.auth.{FirebaseAuth as GoogleFirebaseAuth, *}
 import zio.*
 import zio.interop.guava.fromListenableFuture
 
-final case class ZFirebaseAuthLive(firebaseAuth: FirebaseAuth) extends ZFirebaseAuth:
+final case class FirebaseAuthLive(auth: GoogleFirebaseAuth) extends FirebaseAuth:
   def createCustomToken(uid: String): Task[String] = withFirebaseAuth(_.createCustomTokenAsync(uid))
 
   def verifyToken(token: String): Task[FirebaseToken] = withFirebaseAuth(_.verifyIdTokenAsync(token))
@@ -23,13 +23,13 @@ final case class ZFirebaseAuthLive(firebaseAuth: FirebaseAuth) extends ZFirebase
 
   def getUserByEmail(email: String): Task[UserInfo] = withFirebaseAuth(_.getUserByEmailAsync(email))
 
-  private def withFirebaseAuth[A](f: FirebaseAuth => ApiFuture[A]): Task[A] =
-    fromListenableFuture(ZIO.succeed(new ApiFutureToListenableFuture[A](f(firebaseAuth))))
+  private def withFirebaseAuth[A](f: GoogleFirebaseAuth => ApiFuture[A]): Task[A] =
+    fromListenableFuture(ZIO.succeed(new ApiFutureToListenableFuture[A](f(auth))))
 
-object ZFirebaseAuthLive:
-  val layer: URLayer[FirebaseApp, ZFirebaseAuth] = ZLayer {
+object FirebaseAuthLive:
+  val layer: URLayer[FirebaseApp, FirebaseAuth] = ZLayer {
     for
       app  <- ZIO.service[FirebaseApp]
-      auth <- ZIO.attempt(FirebaseAuth.getInstance(app)).orDie
-    yield ZFirebaseAuthLive(auth)
+      auth <- ZIO.attempt(GoogleFirebaseAuth.getInstance(app)).orDie
+    yield FirebaseAuthLive(auth)
   }
