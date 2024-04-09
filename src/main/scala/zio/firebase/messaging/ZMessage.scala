@@ -1,6 +1,6 @@
 package zio.firebase.messaging
 
-import com.google.firebase.messaging.{Message, MulticastMessage}
+import com.google.firebase.messaging.{FcmOptions, Message, MulticastMessage}
 import zio.{IO, NonEmptyChunk, ZIO}
 
 import scala.jdk.CollectionConverters.*
@@ -13,13 +13,16 @@ object ZMessage:
       android      <- ZAndroidConfig.make(config.ttl, config.color, config.icon, config.image)
       apns         <- ZApnsConfig.make
       message <- ZIO.attempt {
-                   Message.builder
+                   val builder = Message.builder
                      .setToken(token)
                      .setNotification(notification)
                      .setAndroidConfig(android)
                      .setApnsConfig(apns)
                      .putAllData(content.data.asJava)
-                     .build
+
+                   content.label match
+                     case Some(label) => builder.setFcmOptions(FcmOptions.withAnalyticsLabel(label)).build
+                     case None        => builder.build
                  }
                    .refineToOrDie[IllegalArgumentException]
     yield message

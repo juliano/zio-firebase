@@ -35,3 +35,8 @@ package object messaging:
 
   type Image = Image.Type
   object Image extends Subtype[String]
+
+  type AnalyticsLabel = AnalyticsLabel.Type
+  object AnalyticsLabel extends Subtype[String]:
+    private final val regex       = "^[a-zA-Z0-9-_.~%]{1,50}$"
+    override inline def assertion = matches(regex)
