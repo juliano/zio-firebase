@@ -6,6 +6,8 @@ import com.google.firebase.auth.{FirebaseAuth as GoogleFirebaseAuth, *}
 import zio.*
 import zio.interop.guava.fromListenableFuture
 
+import UserRecord.UpdateRequest
+
 final case class FirebaseAuthLive(auth: GoogleFirebaseAuth) extends FirebaseAuth:
   def createCustomToken(uid: String): Task[String] = withFirebaseAuth(_.createCustomTokenAsync(uid))
 
@@ -20,6 +22,19 @@ final case class FirebaseAuthLive(auth: GoogleFirebaseAuth) extends FirebaseAuth
         .setPassword(password)
     )
   )
+
+  def updateUser(uid: String, email: Option[String], phoneNumber: Option[String]): Task[UserInfo] = {
+    val request = new UpdateRequest(uid)
+    val withEmail = email match
+      case Some(value) => request.setEmail(value).setEmailVerified(true)
+      case None        => request
+
+    val complete = phoneNumber match
+      case Some(value) => withEmail.setPhoneNumber(value)
+      case None        => withEmail
+
+    withFirebaseAuth(_.updateUserAsync(complete))
+  }
 
   def getUserByEmail(email: String): Task[UserInfo] = withFirebaseAuth(_.getUserByEmailAsync(email))
 

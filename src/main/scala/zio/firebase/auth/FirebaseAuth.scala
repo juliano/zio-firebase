@@ -10,4 +10,6 @@ trait FirebaseAuth:
 
   def createUser(uid: String, email: String, password: String): Task[UserInfo]
 
+  def updateUser(uid: String, email: Option[String], phoneNumber: Option[String]): Task[UserInfo]
+
   def getUserByEmail(email: String): Task[UserInfo]

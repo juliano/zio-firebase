@@ -11,7 +11,7 @@ inThisBuild(
     scalafmtSbtCheck := true,
     scalafmtOnCompile := !insideCI.value,
 
-    version := "0.0.5",
+    version := "0.0.6",
     versionScheme := Some("always"),
     publishTo := Some("GitHub juliano Apache Maven Packages" at "https://maven.pkg.github.com/juliano/zio-firebase"),
     publishMavenStyle := true,
@@ -30,12 +30,12 @@ lazy val root = project
     name := "zio-firebase",
     scalaVersion := "3.3.3",
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio" % "2.0.21",
+      "dev.zio" %% "zio" % "2.0.22",
       "dev.zio" %% "zio-prelude" % "1.0.0-RC23",
       "dev.zio" %% "zio-interop-guava" % "32.1.0",
       "com.google.firebase" % "firebase-admin" % "9.1.1",
-      "dev.zio" %% "zio-test" % "2.0.21" % Test,
-      "dev.zio" %% "zio-test-sbt" % "2.0.21" % Test
+      "dev.zio" %% "zio-test" % "2.0.22" % Test,
+      "dev.zio" %% "zio-test-sbt" % "2.0.22" % Test
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
     scalacOptions := Seq(
