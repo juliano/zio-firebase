@@ -2,6 +2,7 @@ package zio.firebase.firestore
 
 import com.google.cloud.firestore.{CollectionReference, Query}
 import zio.Task
+import zio.firebase.firestore.codec.JavaCodec
 
 trait Firestore:
   def get[A](c: CollectionPath, d: DocumentPath)(using JavaCodec[A]): Task[A]

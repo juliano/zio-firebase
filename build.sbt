@@ -3,17 +3,16 @@ import org.scalafmt.sbt.ScalafmtPlugin.autoImport.scalafmtOnCompile
 inThisBuild(
   List(
     organization := "io.github.juliano",
-    homepage := Some(url("https://github.com/juliano/zio-firebase")),
+    homepage     := Some(url("https://github.com/juliano/zio-firebase")),
     developers := List(
       Developer("juliano", "Juliano Alves", "von.juliano@gmail.com", url("https://juliano-alves.com/"))
     ),
-    scalafmtCheck := true,
-    scalafmtSbtCheck := true,
+    scalafmtCheck     := true,
+    scalafmtSbtCheck  := true,
     scalafmtOnCompile := !insideCI.value,
-
-    version := "0.0.6",
-    versionScheme := Some("always"),
-    publishTo := Some("GitHub juliano Apache Maven Packages" at "https://maven.pkg.github.com/juliano/zio-firebase"),
+    version           := "0.0.7",
+    versionScheme     := Some("always"),
+    publishTo         := Some("GitHub juliano Apache Maven Packages" at "https://maven.pkg.github.com/juliano/zio-firebase"),
     publishMavenStyle := true,
     credentials += Credentials(
       "GitHub Package Registry",
@@ -27,15 +26,15 @@ inThisBuild(
 lazy val root = project
   .in(file("."))
   .settings(
-    name := "zio-firebase",
-    scalaVersion := "3.3.3",
+    name         := "zio-firebase",
+    scalaVersion := "3.5.0",
     libraryDependencies ++= Seq(
-      "dev.zio" %% "zio" % "2.1.2",
-      "dev.zio" %% "zio-prelude" % "1.0.0-RC27",
-      "dev.zio" %% "zio-interop-guava" % "32.1.0",
-      "com.google.firebase" % "firebase-admin" % "9.1.1",
-      "dev.zio" %% "zio-test" % "2.1.2" % Test,
-      "dev.zio" %% "zio-test-sbt" % "2.1.2" % Test
+      "dev.zio"            %% "zio"               % "2.1.11",
+      "dev.zio"            %% "zio-prelude"       % "1.0.0-RC31",
+      "dev.zio"            %% "zio-interop-guava" % "32.1.0",
+      "com.google.firebase" % "firebase-admin"    % "9.1.1",
+      "dev.zio"            %% "zio-test"          % "2.1.11" % Test,
+      "dev.zio"            %% "zio-test-sbt"      % "2.1.11" % Test
     ),
     testFrameworks += new TestFramework("zio.test.sbt.ZTestFramework"),
     scalacOptions := Seq(
@@ -49,8 +48,7 @@ lazy val root = project
       "-language:higherKinds",
       "-language:implicitConversions",
       "-language:existentials",
-      "-Xfatal-warnings",
-      "-Ykind-projector",
+      "-Xkind-projector",
       "-Yretain-trees"
     )
   )

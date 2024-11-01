@@ -5,6 +5,7 @@ import com.google.cloud.firestore.{Firestore as GoogleFirestore, *}
 import com.google.firebase.FirebaseApp
 import com.google.firebase.cloud.FirestoreClient
 import zio.*
+import zio.firebase.firestore.codec.JavaCodec
 import zio.interop.guava.fromListenableFuture
 
 import scala.jdk.CollectionConverters.*
@@ -13,7 +14,7 @@ final case class FirestoreLive(firestore: GoogleFirestore) extends Firestore:
   def get[A](c: CollectionPath, d: DocumentPath)(using codec: JavaCodec[A]): Task[A] =
     for
       doc  <- withFirestore(_.collection(c).document(d).get())
-      data <- ZIO.fromEither(codec.from(doc.getData))
+      data <- ZIO.fromEither(codec.from(doc.getData)).mapError(new IllegalArgumentException(_))
     yield data
 
   def add[A](c: CollectionPath, data: A)(using codec: JavaCodec[A]): Task[DocumentPath] =
